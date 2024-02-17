@@ -1,124 +1,126 @@
 import { useEffect, useState } from "react"
 import Card from "./components/ui/shared/Card"
-import mqtt from 'mqtt'
 import Form from "./components/ui/shared/Form"
+import axios from "axios"
+import Alarm from "./components/ui/shared/Alarm"
+import { Button } from "./components/ui/button"
+import Bluethooth from "./components/ui/shared/bluethooth"
+
 
 function App() {
-  const clientId = 'mqttx_b70cb280'
-  const username = ''
-  const password = ''
-  const [client, setClient] = useState(null)
-  const [isConnected, setIsConnected] = useState(false)
+
+  const base_url = 'http://172.20.160.1:8000/api'
+
+  const getDataFromApi = async () => {
+
+    const response = await axios.get(`${base_url}/status`)
+    console.log('fetching data')
+    if (response.status == 200) {
+      const result = response.data.data
+      const { temp, hum, moi, smoke } = result
+      setData(prevState => ({
+        ...prevState,
+        temp,
+        hum,
+        moi,
+        smoke
+      }))
+    }
+  }
+
+  const getSensorDataFromApi = async () => {
+    const request = await axios.get(`${base_url}/sensor`)
+    console.log('get sensor data')
+    if (request.status == 200) {
+      const result = request.data.data
+      const { temp, hum, moi, smoke } = result
+      setSensorData(prevState => ({
+        ...prevState,
+        temp,
+        hum,
+        moi,
+        smoke
+      }))
+    }
+  }
+
+  const sendDataToApi = async ({ temp, hum, moi, smoke }) => {
+    console.log('sending data to api');
+    const request = await axios.post(`${base_url}/status`, {
+      data: {
+        temp,
+        hum,
+        moi,
+        smoke
+      }
+    })
+    console.log(request)
+  }
+
   const [topic, setTopic] = useState(null)
   const [data, setData] = useState({
     temp: {
       min: 0,
-      max: 0,
-      current: 0
+      max: 0
     },
     hum: {
       min: 0,
-      max: 0,
-      current: 0
+      max: 0
     },
     moi: {
       min: 0,
-      max: 0,
-      current: 0
+      max: 0
     },
     smoke: false
   })
 
-  
-
-  const init = () => {
-    const _client = mqtt.connect('ws://127.0.0.1:9001/mqtt', {
-      username,
-      password,
-      clientId,
-      keepalive: 60
-    })
-
-    setClient(_client)
-    setIsConnected(true)
-
-    _client.on("message", (topic, message) => {
-      console.log(topic, JSON.parse(message))
-      setData(prevState => ({
-        ...prevState,
-        topic: JSON.parse(message)
-      }))
-    })
-  }
+  const [sensorData, setSensorData] = useState({
+    temp: 0,
+    hum: 0,
+    moi: 0,
+    smoke: false
+  })
 
   useEffect(() => {
-    const publish = {
-      topic: 'hum',
-      qos: 0,
-      payload: JSON.stringify({
-        min: 0,
-        max: 0,
-        current: 0
-      })
-    }
-
-    init()
-
-    if(client) {
-      client.subscribe('hum', { qos: 0 }, (error, granted) => {
-        if (error) {
-          console.log("subscribe error:", error)
-          return
-        }
-        console.log("subscribe successfully:", granted)
-      })
-
-      client.subscribe('temp', { qos: 0 }, (error, granted) => {
-        if (error) {
-          console.log("subscribe error:", error)
-          return
-        }
-        console.log("subscribe successfully:", granted)
-        
-      })
-
-      client.subscribe('moi', { qos: 0 }, (error, granted) => {
-        if (error) {
-          console.log("subscribe error:", error)
-          return
-        }
-        console.log("subscribe successfully:", granted)
-      })
-
-      const { topic, qos, payload } = publish
-      client.publish(topic, payload, { qos }, (error) => {
-        console.log('publish error', error)
-      })
-    }
-  }, [isConnected])
+    console.log(base_url);
+    getDataFromApi()
+    setInterval(() => {
+      getSensorDataFromApi()
+    }, 5000);
+  }, [])
 
   return (
     <>
-      <div className={`h-screen w-full flex ${topic ? 'hidden' : ''}`}>
-        <div className="grid p-4 w-2/3 mx-auto my-auto grid-rows-2 grid-flow-col gap-4 text-center items-center">
-          <a className=" cursor-pointer" onClick={() => setTopic('temp')}>
-            <Card icon={'/thermometer.png'} text={'Temperature'} />
-          </a>
-          <a className=" cursor-pointer" onClick={() => setTopic('hum')}>
-            <Card icon={'/humidity.png'} text={'Humidity'} />
-          </a>
-          <a className=" cursor-pointer" onClick={() => setTopic('moi')}>
-            <Card icon={'/moisturizing.png'} text={'Soil Moisure'} onClick={() => setTopic('moi')} />
-          </a>
-          <a className=" cursor-pointer" onClick={() => {
-            setData(prevState => ({
-              ...prevState,
-              smoke: !prevState.smoke
-            }))
-            console.log(data)
-          }}>
-            <Card icon={'/smoke-detector.png'} text={'Smoke Sensor'} active={data.smoke} />
-          </a>
+      {sensorData && JSON.stringify(sensorData)}
+      <div className={`h-screen w-full flex flex-col ${topic ? 'hidden' : ''}`}>
+        <div className="w-2/3 m-auto">
+          <div className="w-full mx-auto">
+            <Alarm data={data} sensors={sensorData} />
+          </div>
+          <div className="grid p-4 w-full mx-auto grid-rows-2 grid-flow-col gap-4 text-center items-center">
+            <a className=" cursor-pointer" onClick={() => setTopic('temp')}>
+              <Card icon={'/thermometer.png'} text={'Temperature'} />
+            </a>
+            <a className=" cursor-pointer" onClick={() => setTopic('hum')}>
+              <Card icon={'/humidity.png'} text={'Humidity'} />
+            </a>
+            <a className=" cursor-pointer" onClick={() => setTopic('moi')}>
+              <Card icon={'/moisturizing.png'} text={'Soil Moisure'} onClick={() => setTopic('moi')} />
+            </a>
+            <a className=" cursor-pointer" onClick={() => {
+              setData(prevState => ({
+                ...prevState,
+                smoke: !prevState.smoke
+              }))
+              console.log(data)
+              sendDataToApi({
+                ...data,
+                smoke: !data.smoke
+              })
+            }}>
+              <Card icon={'/smoke-detector.png'} text={'Smoke Sensor'} active={data.smoke} />
+            </a>
+          </div>
         </div>
       </div>
       <div>
@@ -131,6 +133,13 @@ function App() {
             }
           }))
           console.log(data)
+          sendDataToApi({
+            ...data,
+            temp: {
+              min,
+              max
+            }
+          })
           setTopic(null)
         }} /> : null}
         {topic == 'hum' ? <Form subject='humidity' data={data.hum} setSubject={({ min, max }) => {
@@ -142,6 +151,13 @@ function App() {
             }
           }))
           console.log(data)
+          sendDataToApi({
+            ...data,
+            hum: {
+              min,
+              max
+            }
+          })
           setTopic(null)
         }} /> : null}
         {topic == 'moi' ? <Form subject='Soil Moisore' data={data.moi} setSubject={({ min, max }) => {
@@ -153,9 +169,19 @@ function App() {
             }
           }))
           console.log(data)
+          sendDataToApi({
+            ...data,
+            moi: {
+              min,
+              max
+            }
+          })
           setTopic(null)
         }} /> : null}
+
+        <Bluethooth />
       </div>
+
     </>
   )
 }

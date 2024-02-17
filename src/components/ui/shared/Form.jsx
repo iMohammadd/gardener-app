@@ -13,6 +13,7 @@ const formSchema = z.object({
 
 export default function Form({ subject, setSubject, data }) {
 
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -36,10 +37,10 @@ export default function Form({ subject, setSubject, data }) {
                                     control={form.control}
                                     name="min"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem className="w-full mx-2">
                                             <FormControl>
                                                 <div className="w-full mx-2">
-                                                    <Input className="w-max" type='text' {...field} placeholder='Minimum Value' />
+                                                    <Input className="w-full" type='text' {...field} placeholder='Minimum Value' />
                                                 </div>
                                             </FormControl>
                                             <FormMessage />
@@ -50,10 +51,10 @@ export default function Form({ subject, setSubject, data }) {
                                     control={form.control}
                                     name="max"
                                     render={({ field }) => (
-                                        <FormItem>
+                                        <FormItem className="w-full mx-2">
                                             <FormControl>
                                                 <div className="w-full mx-2">
-                                                    <Input className="w-max" type='text' {...field} placeholder='Maximum Value' />
+                                                    <Input className="w-full" type='text' {...field} placeholder='Maximum Value' />
                                                 </div>
                                             </FormControl>
                                             <FormMessage />

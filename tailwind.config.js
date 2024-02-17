@@ -14,7 +14,7 @@ module.exports = {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
-      },
+      }
     },
     extend: {
       colors: {
@@ -66,10 +66,15 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        'blinking-alarm': {
+          '0%, 100%': { backgroundColor: '#ef4444'},
+          '50%': { backgroundColor: '#ffffff' }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'blinking-alarm': 'blinking-alarm ease-in-out infinite'
       },
     },
   },
