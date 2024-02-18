@@ -49,7 +49,7 @@ export default function Alarm({ data, sensors }) {
     const [alarms, setAlarms] = useState(initialAlarms)
     return (
         <>
-            {JSON.stringify(alarms)}
+            {/* {JSON.stringify(alarms)} */}
             <div className="w-full flex">
                 <div className="m-auto">
                     <div className="flex gap-4 justify-evenly">

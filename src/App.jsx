@@ -3,15 +3,12 @@ import Card from "./components/ui/shared/Card"
 import Form from "./components/ui/shared/Form"
 import axios from "axios"
 import Alarm from "./components/ui/shared/Alarm"
-import { Button } from "./components/ui/button"
-import Bluethooth from "./components/ui/shared/bluethooth"
 
 
 function App() {
 
-  const base_url = 'http://172.20.160.1:8000/api'
-
-  const getDataFromApi = async () => {
+  const base_url = 'http://127.0.0.1:8000/api'
+const getDataFromApi = async () => {
 
     const response = await axios.get(`${base_url}/status`)
     console.log('fetching data')
@@ -81,17 +78,17 @@ function App() {
     smoke: false
   })
 
-  useEffect(() => {
-    console.log(base_url);
-    getDataFromApi()
-    setInterval(() => {
-      getSensorDataFromApi()
-    }, 5000);
-  }, [])
+  // useEffect(() => {
+  //   console.log(base_url);
+  //   getDataFromApi()
+  //   setInterval(() => {
+  //     getSensorDataFromApi()
+  //   }, 5000);
+  // }, [])
 
   return (
     <>
-      {sensorData && JSON.stringify(sensorData)}
+      {/* {sensorData && JSON.stringify(sensorData)} */}
       <div className={`h-screen w-full flex flex-col ${topic ? 'hidden' : ''}`}>
         <div className="w-2/3 m-auto">
           <div className="w-full mx-auto">
@@ -178,8 +175,6 @@ function App() {
           })
           setTopic(null)
         }} /> : null}
-
-        <Bluethooth />
       </div>
 
     </>
