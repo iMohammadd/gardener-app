@@ -83,6 +83,7 @@ const getDataFromApi = async () => {
     getDataFromApi()
     setInterval(() => {
       getSensorDataFromApi()
+      getDataFromApi()
     }, 5000);
   }, [])
 
