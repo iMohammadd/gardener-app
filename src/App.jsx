@@ -7,7 +7,7 @@ import Alarm from "./components/ui/shared/Alarm"
 
 function App() {
 
-  const base_url = 'http://127.0.0.1:8000/api'
+  const base_url = 'https://havashenas.liara.run/api'
 const getDataFromApi = async () => {
 
     const response = await axios.get(`${base_url}/status`)
@@ -78,13 +78,13 @@ const getDataFromApi = async () => {
     smoke: false
   })
 
-  // useEffect(() => {
-  //   console.log(base_url);
-  //   getDataFromApi()
-  //   setInterval(() => {
-  //     getSensorDataFromApi()
-  //   }, 5000);
-  // }, [])
+  useEffect(() => {
+    console.log(base_url);
+    getDataFromApi()
+    setInterval(() => {
+      getSensorDataFromApi()
+    }, 5000);
+  }, [])
 
   return (
     <>
