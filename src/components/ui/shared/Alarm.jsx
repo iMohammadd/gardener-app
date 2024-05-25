@@ -52,18 +52,18 @@ export default function Alarm({ data, sensors }) {
             {/* {JSON.stringify(alarms)} */}
             <div className="w-full flex">
                 <div className="m-auto">
-                    <div className="flex gap-4 justify-evenly">
+                    <div className=" grid grid-cols-2 gap-4 md:grid-cols-4">
                         <div className={`px-4 py-2 ${alarms.cooler ? 'animate-ping' : ''} rounded mx-2`}>
-                            <img src={icons.cooler.sm} className="w-[48px] h-[48px] object-contain" />
+                            <img src={icons.cooler.sm} className="min-w-[16px] min-h-[16px] md:min-w-[32px] md:min-h-[32px]" />
                         </div>
                         <div className={`px-4 py-2 ${alarms.heater ? 'animate-ping' : ''} rounded mx-2`}>
-                            <img src={icons.heater.sm} className="w-[48px] h-[48px] object-contain" />
+                            <img src={icons.heater.sm} className="min-w-[16px] min-h-[16px] md:min-w-[32px] md:min-h-[32px]" />
                         </div>
                         <div className={`px-4 py-2 ${alarms.fire ? 'animate-ping' : ''} rounded mx-2`}>
-                            <img src={icons.fire.sm} className="w-[48px] h-[48px] object-contain" />
+                            <img src={icons.fire.sm} className="min-w-[16px] min-h-[16px] md:min-w-[32px] md:min-h-[32px]" />
                         </div>
                         <div className={`px-4 py-2 ${alarms.water ? 'animate-ping' : ''} rounded mx-2`}>
-                            <img src={icons.water.sm} className="w-[48px] h-[48px] object-contain" />
+                            <img src={icons.water.sm} className="min-w-[16px] min-h-[16px] md:min-w-[32px] md:min-h-[32px]" />
                         </div>
                     </div>
                 </div>
