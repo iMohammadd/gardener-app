@@ -7,7 +7,6 @@ import Alarm from "./components/ui/shared/Alarm"
 
 function App() {
 
-  // const base_url = 'https://havashenas.liara.run/api'
   const base_url = import.meta.env.VITE_API_URL
   const getDataFromApi = async () => {
 
