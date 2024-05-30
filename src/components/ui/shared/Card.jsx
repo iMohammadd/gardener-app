@@ -1,6 +1,7 @@
-export default function Card({ icon, text, active = false }) {
+export default function Card({ icon, text, active = false, value = null, unit = null, has_alarm = false, alarming = null }) {
     return (
-        <div className={`${active ? 'bg-cyan-800 text-white' : 'bg-white text-black'} rounded border-black-1 py-6 flex flex-col items-center shadow-sm`}>
+        <div className={`${active ? 'bg-cyan-800 text-white' : 'bg-white text-black'} ${has_alarm == true && (alarming ? 'shadow-red-500' : 'shadow-sky-600')} rounded py-6 flex flex-col items-center shadow-sm h-full place-content-center`}>
+            {value && (<span className=" font-extrabold text-4xl mb-4">{value} {unit}</span>)}
             <img src={icon} className=" w-[64px] h-[64px]" />
             <span className=" font-medium">{text}</span>
         </div>

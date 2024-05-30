@@ -7,8 +7,9 @@ import Alarm from "./components/ui/shared/Alarm"
 
 function App() {
 
-  const base_url = 'https://havashenas.liara.run/api'
-const getDataFromApi = async () => {
+  // const base_url = 'https://havashenas.liara.run/api'
+  const base_url = import.meta.env.VITE_API_URL
+  const getDataFromApi = async () => {
 
     const response = await axios.get(`${base_url}/status`)
     console.log('fetching data')
@@ -30,6 +31,7 @@ const getDataFromApi = async () => {
     console.log('get sensor data')
     if (request.status == 200) {
       const result = request.data.data
+      console.log(result)
       const { temp, hum, moi, smoke } = result
       setSensorData(prevState => ({
         ...prevState,
@@ -83,7 +85,6 @@ const getDataFromApi = async () => {
     getDataFromApi()
     setInterval(() => {
       getSensorDataFromApi()
-      getDataFromApi()
     }, 5000);
   }, [])
 
@@ -96,16 +97,16 @@ const getDataFromApi = async () => {
             <Alarm data={data} sensors={sensorData} />
           </div>
           <div className="grid p-4 w-full mx-auto grid-rows-2 grid-flow-col gap-4 text-center items-center">
-            <a className=" cursor-pointer" onClick={() => setTopic('temp')}>
-              <Card icon={'/thermometer.png'} text={'Temperature'} />
+            <a className=" cursor-pointer h-full" onClick={() => setTopic('temp')}>
+              <Card className="h-full" icon={'/thermometer.png'} text={'Temperature'} value={sensorData.temp} unit={"°"} />
             </a>
-            <a className=" cursor-pointer" onClick={() => setTopic('hum')}>
-              <Card icon={'/humidity.png'} text={'Humidity'} />
+            <a className=" cursor-pointer h-full" onClick={() => setTopic('hum')}>
+              <Card className="h-full" icon={'/humidity.png'} text={'Humidity'} value={sensorData.hum} unit={"%"} />
             </a>
-            <a className=" cursor-pointer" onClick={() => setTopic('moi')}>
-              <Card icon={'/moisturizing.png'} text={'Soil Moisure'} onClick={() => setTopic('moi')} />
+            <a className=" cursor-pointer h-full" onClick={() => setTopic('moi')}>
+              <Card className="h-full" icon={'/moisturizing.png'} text={'Soil Moisure'} value={sensorData.moi} unit={"%"} />
             </a>
-            <a className=" cursor-pointer" onClick={() => {
+            <a className=" cursor-pointer h-full" onClick={() => {
               setData(prevState => ({
                 ...prevState,
                 smoke: !prevState.smoke
@@ -116,7 +117,7 @@ const getDataFromApi = async () => {
                 smoke: !data.smoke
               })
             }}>
-              <Card icon={'/smoke-detector.png'} text={'Smoke Sensor'} active={data.smoke} />
+              <Card className="h-full" icon={'/smoke-detector.png'} text={'Smoke Sensor'} active={data.smoke} has_alarm={true} alarming={sensorData.smoke} />
             </a>
           </div>
         </div>
